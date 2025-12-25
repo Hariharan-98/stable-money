@@ -57,7 +57,7 @@ export const History = () => {
                                 onChange={(e) => setBase(e.target.value)}
                                 className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white rounded-lg p-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
                             >
-                                {Object.entries(currencyList).map(([code, name]) => (
+                                {Object.entries(currencyList).map(([code]) => (
                                     <option key={code} value={code}>{code}</option>
                                 ))}
                             </select>
@@ -74,7 +74,7 @@ export const History = () => {
                                 onChange={(e) => setTarget(e.target.value)}
                                 className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white rounded-lg p-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
                             >
-                                {Object.entries(currencyList).map(([code, name]) => (
+                                {Object.entries(currencyList).map(([code]) => (
                                     <option key={code} value={code}>{code}</option>
                                 ))}
                             </select>
