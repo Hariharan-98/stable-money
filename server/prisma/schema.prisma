@@ -1,0 +1,39 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Currency {
+  code   String @id
+  name   String
+  symbol String?
+  ratesBase Rate[] @relation("BaseCurrency")
+  ratesTarget Rate[] @relation("TargetCurrency")
+}
+
+model Rate {
+  id        Int      @id @default(autoincrement())
+  base      String
+  target    String
+  rate      Float
+  timestamp DateTime @default(now())
+
+  baseCurrency   Currency @relation("BaseCurrency", fields: [base], references: [code])
+  targetCurrency Currency @relation("TargetCurrency", fields: [target], references: [code])
+
+  @@unique([base, target, timestamp])
+}
+
+model GoldRate {
+  id        Int      @id @default(autoincrement())
+  base      String
+  // Storing rates as a JSON string to be flexible (e.g. {"XAU": ..., "XAG": ..., "EUR": ...})
+  rates     String
+  timestamp DateTime @default(now())
+}
+
+
