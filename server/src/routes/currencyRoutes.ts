@@ -8,6 +8,5 @@ router.get('/currencies', rateController.getCurrencies);
 router.get('/rates', rateController.getRates);
 router.get('/convert', rateController.convertCurrency);
 router.get('/history', rateController.getHistory);
-router.get('/gold-rates', rateController.getGoldRates);
 
 export default router;

@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import { RateService } from '../services/rateService';
-import { GoldService } from '../services/goldService';
 
 export const getRates = async (req: Request, res: Response) => {
     try {
@@ -38,16 +37,6 @@ export const getHistory = async (req: Request, res: Response) => {
         res.json(history);
     } catch (e) {
         res.status(500).json({ error: 'Failed to fetch history' });
-    }
-};
-
-export const getGoldRates = async (req: Request, res: Response) => {
-    try {
-        const result = await GoldService.getRates();
-        res.json(result);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Failed to fetch gold rates' });
     }
 };
 

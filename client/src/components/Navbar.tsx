@@ -1,23 +1,30 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { DollarSign, Coins, ArrowRightLeft, Menu, X } from 'lucide-react';
+import { ArrowRightLeft, Menu, X, TrendingUp, Calculator, TrendingDown, Home, Flame, FileText } from 'lucide-react';
 
 export const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
-        <nav className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
+        <nav className="sticky top-0 z-50 bg-white/80 dark:bg-gray-800/90 backdrop-blur-md shadow-sm border-b border-gray-200 dark:border-gray-700 transition-all duration-300">
             <div className="container mx-auto px-4">
                 <div className="flex items-center justify-between h-16">
                     <Link to="/" className="flex items-center space-x-2 text-blue-600 dark:text-blue-400 font-bold text-xl z-20">
-                        <DollarSign className="w-6 h-6" />
+                        <img src="/logo.png" alt="Stable Money Logo" className="w-12 h-12 object-contain" />
                         <span>Stable Money</span>
                     </Link>
 
                     {/* Desktop Menu */}
-                    <div className="hidden md:flex space-x-4">
-                        <NavLink to="/" icon={<ArrowRightLeft className="w-4 h-4" />} text="Currency Converter" />
-                        <NavLink to="/gold-rates" icon={<Coins className="w-4 h-4 text-amber-500" />} text="Gold and Silver Rates" />
+                    <div className="hidden md:flex space-x-1">
+                        <NavLink to="/" icon={<Home className="w-4 h-4" />} text="Home" />
+                        <div className="h-6 w-px bg-gray-200 dark:bg-gray-700 mx-2 self-center"></div>
+                        <NavLink to="/currency-converter" icon={<ArrowRightLeft className="w-4 h-4" />} text="Converter" />
+                        <NavLink to="/calculator" icon={<TrendingUp className="w-4 h-4 text-green-500" />} text="SIP" />
+                        <NavLink to="/emi-calculator" icon={<Calculator className="w-4 h-4 text-indigo-500" />} text="EMI" />
+                        <NavLink to="/rent-vs-buy" icon={<Home className="w-4 h-4 text-blue-500" />} text="Rent vs Buy" />
+                        <NavLink to="/fire-calculator" icon={<Flame className="w-4 h-4 text-amber-500" />} text="FIRE" />
+                        <NavLink to="/tax-calculator" icon={<FileText className="w-4 h-4 text-slate-500" />} text="Tax" />
+                        <NavLink to="/inflation-calculator" icon={<TrendingDown className="w-4 h-4 text-orange-500" />} text="Inflation" />
                     </div>
 
                     {/* Mobile Toggle */}
@@ -41,9 +48,39 @@ export const Navbar = () => {
                             onClick={() => setIsOpen(false)}
                         />
                         <MobileNavLink
-                            to="/gold-rates"
-                            icon={<Coins className="w-5 h-5 text-amber-500" />}
-                            text="Gold and Silver Rates"
+                            to="/calculator"
+                            icon={<TrendingUp className="w-5 h-5 text-green-500" />}
+                            text="SIP Calculator"
+                            onClick={() => setIsOpen(false)}
+                        />
+                        <MobileNavLink
+                            to="/emi-calculator"
+                            icon={<Calculator className="w-5 h-5 text-indigo-500" />}
+                            text="EMI Calculator"
+                            onClick={() => setIsOpen(false)}
+                        />
+                        <MobileNavLink
+                            to="/inflation-calculator"
+                            icon={<TrendingDown className="w-5 h-5 text-orange-500" />}
+                            text="Inflation"
+                            onClick={() => setIsOpen(false)}
+                        />
+                        <MobileNavLink
+                            to="/rent-vs-buy"
+                            icon={<Home className="w-5 h-5 text-blue-500" />}
+                            text="Rent vs Buy"
+                            onClick={() => setIsOpen(false)}
+                        />
+                        <MobileNavLink
+                            to="/fire-calculator"
+                            icon={<Flame className="w-5 h-5 text-amber-500" />}
+                            text="FIRE Calculator"
+                            onClick={() => setIsOpen(false)}
+                        />
+                        <MobileNavLink
+                            to="/tax-calculator"
+                            icon={<FileText className="w-5 h-5 text-slate-500" />}
+                            text="Tax Calculator"
                             onClick={() => setIsOpen(false)}
                         />
                     </div>

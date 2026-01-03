@@ -164,6 +164,17 @@ export const Dashboard = () => {
                                                 <span>Convert</span>
                                             </button>
                                         </div>
+                                        <div className="mt-2 text-center">
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    navigate('/calculator');
+                                                }}
+                                                className="text-xs text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 underline"
+                                            >
+                                                Try SIP Calculator
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             )

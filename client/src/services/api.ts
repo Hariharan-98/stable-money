@@ -21,9 +21,5 @@ export const api = {
     getHistory: async (start: string, end: string, base: string) => {
         const response = await axios.get(`${API_URL}/history`, { params: { start_date: start, end_date: end, base } });
         return response.data;
-    },
-    getGoldRates: async () => {
-        const response = await axios.get(`${API_URL}/gold-rates`);
-        return response.data;
     }
 };
