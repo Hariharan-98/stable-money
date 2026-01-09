@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { api } from '../services/api';
 import { Layout } from '../components/Layout';
 import { Modal } from '../components/Modal';
-import { ArrowUpRight, ArrowRight, Calculator, LineChart } from 'lucide-react';
+import { StatCard } from '../components/StatCard';
+import { ArrowUpRight, ArrowRight, Calculator, LineChart, TrendingUp, DollarSign, Globe } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
 import { useNavigate } from 'react-router-dom';
@@ -89,57 +90,107 @@ export const Dashboard = () => {
         navigate(`/history?base=${base}&target=${targetCurr}`);
     };
 
+    // Calculate metrics for stat cards
+    const metrics = useMemo(() => {
+        if (!data?.rates) return null;
+
+        const rates = Object.values(data.rates) as number[];
+        const avgRate = rates.reduce((a, b) => a + b, 0) / rates.length;
+        const maxRate = Math.max(...rates);
+        const minRate = Math.min(...rates);
+
+        return {
+            totalCurrencies: Object.keys(data.rates).length,
+            avgRate: avgRate.toFixed(2),
+            highestRate: maxRate.toFixed(2),
+            lowestRate: minRate.toFixed(2),
+        };
+    }, [data]);
+
     return (
         <Layout>
-            <div className="space-y-6">
+            <div className="space-y-8">
+                {/* Stats Overview */}
+                {!loading && metrics && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <StatCard
+                            title="Total Currencies"
+                            value={metrics.totalCurrencies}
+                            icon={Globe}
+                            gradient="cyan-blue"
+                        />
+                        <StatCard
+                            title="Average Rate"
+                            value={metrics.avgRate}
+                            subtitle={base}
+                            icon={TrendingUp}
+                            gradient="pink-purple"
+                        />
+                        <StatCard
+                            title="Highest Rate"
+                            value={metrics.highestRate}
+                            subtitle={base}
+                            icon={ArrowUpRight}
+                            gradient="purple-pink"
+                        />
+                        <StatCard
+                            title="Lowest Rate"
+                            value={metrics.lowestRate}
+                            subtitle={base}
+                            icon={DollarSign}
+                            gradient="cyan-purple"
+                        />
+                    </div>
+                )}
+
                 <header className="flex justify-between items-center">
                     <div>
-                        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Exchange Rates and Conversion</h1>
-                        <p className="text-gray-500 dark:text-gray-400 mt-1">Real-time rates for {base}</p>
+                        <h1 className="text-4xl font-display font-bold gradient-text">Exchange Rates</h1>
+                        <p className="text-gray-300 mt-2">Real-time rates for {base}</p>
                     </div>
                     <select
                         value={base}
                         onChange={(e) => setBase(e.target.value)}
-                        className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white rounded-lg p-2.5 focus:ring-blue-500 focus:border-blue-500 font-medium max-h-60 overflow-y-auto"
+                        className="glass text-gray-200 rounded-lg p-3 focus:ring-2 focus:ring-neon-cyan focus:border-neon-cyan font-medium max-h-60 overflow-y-auto transition-all"
                     >
                         {Object.entries(currencyList).length > 0 ? (
                             Object.entries(currencyList).map(([code, name]) => (
-                                <option key={code} value={code}>{code} - {name}</option>
+                                <option key={code} value={code} className="bg-space-900">{code} - {name}</option>
                             ))
                         ) : (
                             <>
-                                <option value="USD">USD - US Dollar</option>
-                                <option value="EUR">EUR - Euro</option>
+                                <option value="USD" className="bg-space-900">USD - US Dollar</option>
+                                <option value="EUR" className="bg-space-900">EUR - Euro</option>
                             </>
                         )}
                     </select>
                 </header>
 
                 {loading ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         {[...Array(8)].map((_, i) => (
-                            <div key={i} className="h-32 bg-gray-200 dark:bg-gray-800 rounded-xl animate-pulse"></div>
+                            <div key={i} className="h-40 glass rounded-xl animate-pulse"></div>
                         ))}
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         {data && Object.entries(data.rates).map(([curr, val]: [string, any]) => {
                             const rate = val as number;
                             return (
                                 <div
                                     key={curr}
                                     onClick={() => openConvertModal(curr)}
-                                    className="group bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md hover:border-blue-300 dark:hover:border-blue-500 transition-all cursor-pointer relative overflow-hidden"
+                                    className="group glass-card p-6 hover:border-neon-cyan/50 hover:shadow-xl hover:shadow-neon-cyan/10 transition-all duration-300 cursor-pointer relative overflow-hidden"
                                 >
                                     <div className="flex justify-between items-start mb-4">
-                                        <span className="text-2xl font-bold text-gray-900 dark:text-white">{curr}</span>
-                                        <span className={`flex items-center text-sm font-medium ${rate > 1 ? 'text-green-600' : 'text-blue-600'}`}>
+                                        <span className="text-3xl font-display font-bold gradient-text">{curr}</span>
+                                        <span className={`flex items-center text-sm font-medium ${rate > 1 ? 'text-neon-cyan' : 'text-neon-purple'}`}>
                                             <ArrowUpRight className="w-4 h-4 mr-1" />
                                             {rate.toFixed(4)}
                                         </span>
                                     </div>
                                     <div className="mt-4 space-y-3">
-                                        <div className="text-sm text-gray-500 dark:text-gray-400 font-medium">
+                                        <div className="text-sm text-gray-300 font-medium">
                                             1 {base} = {rate.toFixed(4)} {curr}
                                         </div>
                                         <div className="flex space-x-2">
@@ -148,17 +199,17 @@ export const Dashboard = () => {
                                                     e.stopPropagation();
                                                     goToHistory(curr);
                                                 }}
-                                                className="flex-1 flex items-center justify-center space-x-1 text-sm font-medium text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-3 py-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                                                className="flex-1 flex items-center justify-center space-x-1 text-sm font-medium text-gray-200 glass px-3 py-2 rounded-lg hover:bg-white/10 hover:text-neon-cyan transition-all"
                                             >
                                                 <LineChart className="w-4 h-4" />
-                                                <span>Rate History</span>
+                                                <span>History</span>
                                             </button>
                                             <button
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     openConvertModal(curr);
                                                 }}
-                                                className="flex-1 flex items-center justify-center space-x-1 text-sm font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-3 py-2 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors"
+                                                className="flex-1 flex items-center justify-center space-x-1 text-sm font-medium text-neon-cyan glass px-3 py-2 rounded-lg hover:bg-neon-cyan/10 hover:border-neon-cyan/50 transition-all"
                                             >
                                                 <Calculator className="w-4 h-4" />
                                                 <span>Convert</span>
@@ -170,9 +221,10 @@ export const Dashboard = () => {
                                                     e.stopPropagation();
                                                     navigate('/calculator');
                                                 }}
-                                                className="text-xs text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 underline"
+                                                className="text-xs font-bold text-neon-cyan/60 hover:text-neon-cyan transition-colors uppercase tracking-widest flex items-center justify-center gap-1 group/btn"
                                             >
                                                 Try SIP Calculator
+                                                <ArrowRight className="w-3 h-3 group-hover/btn:translate-x-1 transition-transform" />
                                             </button>
                                         </div>
                                     </div>
@@ -190,52 +242,78 @@ export const Dashboard = () => {
                     <div className="space-y-6">
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Amount</label>
-                            <div className="relative">
-                                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-medium">{base}</span>
+                            <div className="relative group">
+                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-neon-cyan font-bold tracking-tight">{base}</span>
                                 <input
                                     type="number"
                                     autoFocus
                                     value={convertAmount}
                                     onChange={(e) => setConvertAmount(Number(e.target.value))}
-                                    className="w-full pl-12 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white rounded-lg p-3 text-lg font-medium focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                                    className="w-full pl-16 bg-white/5 border border-white/20 text-white rounded-xl p-4 text-xl font-bold focus:ring-2 focus:ring-neon-cyan focus:border-neon-cyan outline-none transition-all shadow-lg group-hover:bg-white/10"
                                 />
                             </div>
                         </div>
 
-                        <div className="flex justify-center">
-                            <ArrowRight className="w-6 h-6 text-gray-400 transform rotate-90" />
+                        <div className="flex justify-center -my-2">
+                            <div className="bg-white/10 p-2 rounded-full border border-white/10">
+                                <ArrowRight className="w-5 h-5 text-gray-400 rotate-90" />
+                            </div>
                         </div>
 
-                        <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl text-center">
-                            <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Converted Amount</p>
-                            <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">
-                                {conversionResult?.toFixed(2)} <span className="text-xl">{selectedTarget}</span>
+                        <div className="glass p-5 rounded-2xl text-center border border-white/10 relative overflow-hidden group">
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-neon-cyan/10 rounded-full blur-2xl -mr-16 -mt-16 transition-opacity group-hover:opacity-100 opacity-50"></div>
+                            <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Converted Amount</p>
+                            <div className="text-4xl font-display font-black text-white flex items-center justify-center gap-2">
+                                <span className="gradient-text">{conversionResult?.toFixed(2)}</span>
+                                <span className="text-xl font-bold text-gray-400">{selectedTarget}</span>
                             </div>
-                            <p className="text-xs text-blue-400/70 mt-2">
+                            <p className="text-[10px] font-medium text-gray-500 mt-3 flex items-center justify-center gap-1.5 uppercase tracking-tighter">
+                                <TrendingUp className="w-3 h-3 text-neon-cyan" />
                                 Exchange Rate: 1 {base} = {data?.rates[selectedTarget!]?.toFixed(4)} {selectedTarget}
                             </p>
                         </div>
 
                         {historyData.length > 0 && (
-                            <div className="h-48 w-full mt-4">
-                                <p className="text-xs text-gray-400 mb-2">30 Day Trend</p>
-                                <ResponsiveContainer width="100%" height="100%">
+                            <div className="h-52 w-full mt-4 glass p-4 rounded-2xl border border-white/10">
+                                <div className="flex justify-between items-center mb-4 px-2">
+                                    <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">30 Day Rate Trend</p>
+                                    <div className="flex items-center gap-1 text-[10px] text-neon-cyan font-bold uppercase">
+                                        <div className="w-2 h-2 rounded-full bg-neon-cyan animate-pulse"></div>
+                                        Live
+                                    </div>
+                                </div>
+                                <ResponsiveContainer width="100%" height="80%">
                                     <AreaChart data={historyData}>
                                         <defs>
                                             <linearGradient id="colorRate" x1="0" y1="0" x2="0" y2="1">
-                                                <stop offset="5%" stopColor="#2563eb" stopOpacity={0.3} />
-                                                <stop offset="95%" stopColor="#2563eb" stopOpacity={0} />
+                                                <stop offset="5%" stopColor="#06b6d4" stopOpacity={0.4} />
+                                                <stop offset="95%" stopColor="#06b6d4" stopOpacity={0} />
                                             </linearGradient>
                                         </defs>
                                         <XAxis dataKey="date" hide />
                                         <YAxis domain={['auto', 'auto']} hide />
                                         <Tooltip
-                                            contentStyle={{ backgroundColor: '#1f2937', borderColor: '#374151', color: '#f9fafb', fontSize: '12px' }}
-                                            itemStyle={{ color: '#f9fafb' }}
+                                            contentStyle={{
+                                                backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                                                borderColor: 'rgba(255, 255, 255, 0.1)',
+                                                color: '#ffffff',
+                                                borderRadius: '12px',
+                                                backdropFilter: 'blur(8px)',
+                                                fontSize: '11px',
+                                                fontWeight: 'bold'
+                                            }}
+                                            itemStyle={{ color: '#06b6d4' }}
                                             labelStyle={{ display: 'none' }}
                                             formatter={(value: any) => [value.toFixed(4), 'Rate']}
                                         />
-                                        <Area type="monotone" dataKey="rate" stroke="#2563eb" fillOpacity={1} fill="url(#colorRate)" />
+                                        <Area
+                                            type="monotone"
+                                            dataKey="rate"
+                                            stroke="#06b6d4"
+                                            strokeWidth={3}
+                                            fillOpacity={1}
+                                            fill="url(#colorRate)"
+                                        />
                                     </AreaChart>
                                 </ResponsiveContainer>
                             </div>

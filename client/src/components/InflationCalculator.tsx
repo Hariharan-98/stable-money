@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { CalculatorInput } from './CalculatorInput';
 import {
     XAxis,
     YAxis,
@@ -9,7 +10,7 @@ import {
     ComposedChart
 } from 'recharts';
 import { IndianRupee, TrendingDown, Calendar, AlertTriangle, ArrowRight } from 'lucide-react';
-import { trackSliderInteraction } from '../utils/analytics';
+
 
 interface ErosionPoint {
     year: number;
@@ -53,93 +54,57 @@ export const InflationCalculator = () => {
         }).format(val);
     };
 
-    const InputControl = ({
-        label,
-        value,
-        setValue,
-        min,
-        max,
-        step,
-        icon: Icon,
-        suffix,
-        colorClass = "text-blue-500"
-    }: any) => (
-        <div className="mb-6">
-            <div className="flex justify-between items-center mb-2">
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
-                    <Icon className={`w-4 h-4 ${colorClass}`} />
-                    {label}
-                </label>
-                <div className="bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-lg font-mono text-sm font-semibold text-gray-800 dark:text-gray-200">
-                    {value}{suffix && <span className="text-xs ml-1 text-gray-500">{suffix}</span>}
-                </div>
-            </div>
-            <input
-                type="range"
-                min={min}
-                max={max}
-                step={step}
-                value={value}
-                onChange={(e) => setValue(Number(e.target.value))}
-                onMouseUp={() => trackSliderInteraction('Inflation Calculator')}
-                onTouchEnd={() => trackSliderInteraction('Inflation Calculator')}
-                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 accent-orange-500"
-            />
-            <div className="flex justify-between mt-1 text-xs text-gray-400">
-                <span>{min}</span>
-                <span>{max}</span>
-            </div>
-        </div>
-    );
+
 
     return (
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden">
+        <div className="bg-slate-900 rounded-2xl shadow-2xl border border-slate-800 overflow-hidden text-slate-100 font-sans">
             {/* Header */}
-            <div className="p-6 border-b border-gray-100 dark:border-gray-700 bg-gradient-to-r from-orange-50 to-transparent dark:from-orange-900/20">
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                    <TrendingDown className="w-6 h-6 text-orange-600" />
-                    Inflation Calculator
+            <div className="p-6 border-b border-white/10 bg-white/5">
+                <h2 className="text-2xl font-display font-bold text-white flex items-center gap-2">
+                    <TrendingDown className="w-6 h-6 text-neon-orange" />
+                    Purchasing Power Erosion
                 </h2>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                    See how the silent thief steals your money's value over time.
+                <p className="text-sm text-gray-400 mt-1">
+                    Visualize the silent thief stealing your money's value over time.
                 </p>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-0">
                 {/* Inputs */}
-                <div className="lg:col-span-4 p-6 border-r border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50">
-                    <InputControl
+                <div className="lg:col-span-4 p-6 border-r border-white/10 bg-white/5">
+                    <CalculatorInput
                         label="Initial Amount"
                         value={initialAmount}
                         setValue={setInitialAmount}
                         min={1000} max={1000000} step={1000}
                         icon={IndianRupee}
-                        colorClass="text-green-600"
+                        iconClass="text-neon-cyan"
                     />
-                    <InputControl
-                        label="Annual Inflation Rate"
+                    <CalculatorInput
+                        label="Inflation Rate"
                         value={inflationRate}
                         setValue={setInflationRate}
                         min={1} max={20} step={0.5}
                         icon={TrendingDown}
                         suffix="%"
-                        colorClass="text-orange-600"
+                        iconClass="text-neon-orange"
                     />
-                    <InputControl
+                    <CalculatorInput
                         label="Time Period"
                         value={years}
                         setValue={setYears}
                         min={1} max={50} step={1}
                         icon={Calendar}
                         suffix="Years"
-                        colorClass="text-blue-600"
+                        iconClass="text-neon-amber"
                     />
 
-                    <div className="mt-8 bg-orange-50 dark:bg-orange-900/20 rounded-xl p-4 border border-orange-100 dark:border-orange-800">
+                    <div className="mt-8 glass rounded-2xl p-5 border border-white/10 shadow-xl relative overflow-hidden group">
+                        <div className="absolute top-0 left-0 w-1 h-full bg-neon-orange/50"></div>
                         <div className="flex items-start gap-3">
-                            <AlertTriangle className="w-5 h-5 text-orange-500 shrink-0 mt-0.5" />
-                            <p className="text-sm text-orange-800 dark:text-orange-200 leading-relaxed">
-                                At <strong>{inflationRate}%</strong> inflation, prices double roughly every <strong>{Math.round(72 / inflationRate)} years</strong>. Your money buys less and less.
+                            <AlertTriangle className="w-5 h-5 text-neon-orange shrink-0 mt-0.5" />
+                            <p className="text-xs text-gray-400 leading-relaxed font-medium">
+                                At <span className="text-white font-bold">{inflationRate}%</span> inflation, prices double roughly every <span className="text-white font-bold">{Math.round(72 / inflationRate)} years</span>.
                             </p>
                         </div>
                     </div>
@@ -150,50 +115,51 @@ export const InflationCalculator = () => {
 
                     {/* Key Metrics */}
                     <div className="grid grid-cols-1 gap-4">
-                        <div className="bg-gray-900 text-white rounded-xl p-6 shadow-lg relative overflow-hidden">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16 pointer-events-none"></div>
+                        <div className="glass rounded-3xl p-8 border border-white/10 shadow-2xl relative overflow-hidden group">
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-neon-orange/5 rounded-full blur-[100px] -mr-16 -mt-16 group-hover:opacity-100 opacity-60 transition-opacity"></div>
 
-                            <h3 className="text-gray-400 text-sm font-medium uppercase tracking-wider mb-4">Purchasing Power Reality</h3>
+                            <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-8">Erosion Reality</p>
 
-                            <div className="flex flex-col md:flex-row md:items-center gap-6 md:gap-12">
+                            <div className="flex flex-col md:flex-row md:items-center gap-6 md:gap-12 relative z-10">
                                 <div>
-                                    <p className="text-gray-400 text-sm mb-1">Today you have</p>
-                                    <p className="text-2xl font-bold">{formatCurrency(initialAmount)}</p>
+                                    <p className="text-gray-500 text-[10px] font-bold uppercase tracking-widest mb-1">Today's Value</p>
+                                    <p className="text-3xl font-display font-black text-white">{formatCurrency(initialAmount)}</p>
                                 </div>
 
-                                <ArrowRight className="hidden md:block w-8 h-8 text-orange-500 opacity-50" />
+                                <div className="hidden md:flex bg-white/5 p-3 rounded-full border border-white/5">
+                                    <ArrowRight className="w-6 h-6 text-neon-orange" />
+                                </div>
 
                                 <div>
-                                    <p className="text-gray-400 text-sm mb-1">In {years} years, it feels like</p>
-                                    <p className="text-4xl font-extrabold text-orange-400">{formatCurrency(finalValue)}</p>
+                                    <p className="text-gray-500 text-[10px] font-bold uppercase tracking-widest mb-1">In {years} years, it buys</p>
+                                    <p className="text-5xl font-display font-black text-neon-orange drop-shadow-[0_0_15px_rgba(249,115,22,0.3)] transition-all group-hover:drop-shadow-[0_0_20px_rgba(249,115,22,0.5)]">{formatCurrency(finalValue)}</p>
                                 </div>
                             </div>
 
-                            <div className="mt-6 pt-6 border-t border-white/10 flex items-center gap-2">
-                                <span className="text-orange-400 font-bold">{percentageLost.toFixed(1)}% Lost</span>
-                                <span className="text-gray-500">•</span>
-                                <span className="text-gray-400">That's {formatCurrency(valueLost)} gone due to inflation.</span>
+                            <div className="mt-10 pt-8 border-t border-white/5 flex flex-wrap items-center gap-4 relative z-10">
+                                <span className="bg-neon-orange/10 text-neon-orange px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border border-neon-orange/20">{percentageLost.toFixed(1)}% Value Erosion</span>
+                                <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">Total Loss: {formatCurrency(valueLost)}</span>
                             </div>
                         </div>
                     </div>
 
                     {/* Chart */}
-                    <div className="h-80 w-full">
-                        <p className="text-sm font-semibold text-gray-500 mb-4">Purchasing Power Erosion Curve</p>
-                        <ResponsiveContainer width="100%" height="100%">
+                    <div className="h-80 w-full glass rounded-3xl p-6 border border-white/10 relative overflow-hidden">
+                        <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-6 px-2">Purchasing Power Decay</p>
+                        <ResponsiveContainer width="100%" height="80%">
                             <ComposedChart data={results} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                                 <defs>
                                     <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#f97316" stopOpacity={0.1} />
+                                        <stop offset="5%" stopColor="#f97316" stopOpacity={0.3} />
                                         <stop offset="95%" stopColor="#f97316" stopOpacity={0} />
                                     </linearGradient>
                                 </defs>
-                                <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.1} />
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#ffffff" opacity={0.05} />
                                 <XAxis
                                     dataKey="year"
                                     tickLine={false}
                                     axisLine={false}
-                                    tick={{ fontSize: 12, fill: '#6b7280' }}
+                                    tick={{ fontSize: 11, fill: '#64748b', fontWeight: 'bold' }}
                                     tickCount={5}
                                 />
                                 <YAxis
@@ -201,15 +167,24 @@ export const InflationCalculator = () => {
                                     domain={['dataMin', 'dataMax']}
                                 />
                                 <Tooltip
-                                    contentStyle={{ borderRadius: '8px', border: 'none', backgroundColor: '#1f2937', color: '#fff' }}
-                                    formatter={(val: any) => [formatCurrency(Number(val)), 'Purchasing Power']}
+                                    contentStyle={{
+                                        backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                                        borderColor: 'rgba(255, 255, 255, 0.1)',
+                                        color: '#ffffff',
+                                        borderRadius: '12px',
+                                        backdropFilter: 'blur(8px)',
+                                        fontSize: '11px',
+                                        fontWeight: 'bold'
+                                    }}
+                                    itemStyle={{ color: '#f97316' }}
+                                    formatter={(val: any) => [formatCurrency(Number(val)), 'Power']}
                                     labelFormatter={(label) => `Year ${label}`}
                                 />
                                 <Area
                                     type="monotone"
                                     dataKey="value"
                                     stroke="#f97316"
-                                    strokeWidth={3}
+                                    strokeWidth={4}
                                     fillOpacity={1}
                                     fill="url(#colorValue)"
                                 />

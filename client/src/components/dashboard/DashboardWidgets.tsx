@@ -12,16 +12,16 @@ interface WidgetProps {
 }
 
 const Widget = ({ title, value, subtext, icon: Icon, link, color, bg }: WidgetProps) => (
-    <Link to={link} className="bg-white dark:bg-gray-800 p-4 rounded-xl border border-gray-100 dark:border-gray-700 hover:shadow-md transition-shadow group">
-        <div className="flex justify-between items-start mb-2">
-            <div className={`p-2 rounded-lg ${bg}`}>
-                <Icon className={`w-4 h-4 ${color}`} />
+    <Link to={link} className="glass p-6 rounded-2xl border border-white/5 hover:border-white/20 transition-all group relative overflow-hidden flex flex-col">
+        <div className="flex justify-between items-start mb-6">
+            <div className={`p-2.5 rounded-xl ${bg} ring-1 ring-white/5`}>
+                <Icon className={`w-5 h-5 ${color} drop-shadow-[0_0_8px_currentColor]`} />
             </div>
-            <ArrowUpRight className="w-4 h-4 text-gray-300 group-hover:text-blue-500 transition-colors" />
+            <ArrowUpRight className="w-4 h-4 text-gray-600 group-hover:text-white transition-colors" />
         </div>
-        <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">{title}</p>
-        <p className="text-lg font-bold text-gray-900 dark:text-white mb-1">{value}</p>
-        <p className="text-xs text-gray-500">{subtext}</p>
+        <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-2">{title}</p>
+        <p className="text-xl font-display font-black text-white mb-2">{value}</p>
+        <p className="text-[10px] text-gray-600 font-bold uppercase tracking-tighter italic">{subtext}</p>
     </Link>
 );
 
@@ -38,36 +38,37 @@ export const DashboardWidgets = ({ data }: { data: any }) => {
             <Widget
                 title="SIP Monthly"
                 value={fmt(data.sipMonthly)}
-                subtext={`Goal: 1 Cr in ${data.sipYears} Yrs`}
+                subtext={`Goal: 1 Cr Target`}
                 icon={TrendingUp}
                 link="/calculator"
-                color="text-emerald-600"
-                bg="bg-emerald-50 dark:bg-emerald-900/20"
+                color="text-neon-green"
+                bg="bg-neon-green/10"
             />
             <Widget
                 title="Loan EMI"
                 value={fmt(data.emiMonthly)}
-                subtext={`${data.emiTenure} Years remaining`}
+                subtext={`${data.emiTenure}Y Duration`}
                 icon={Calculator}
                 link="/emi-calculator"
-                color="text-indigo-600"
-                bg="bg-indigo-50 dark:bg-indigo-900/20"
+                color="text-neon-cyan"
+                bg="bg-neon-cyan/10"
             />
             <Widget
                 title="Tax Savings"
                 value={data.taxSavings > 0 ? fmt(data.taxSavings) : "₹0"}
-                subtext={data.taxSavings > 0 ? "Potential Savings" : "Check New Regime"}
+                subtext={data.taxSavings > 0 ? "Potential" : "Optimize Now"}
                 icon={FileText}
                 link="/tax-calculator"
-                color="text-blue-600"
-                bg="bg-blue-50 dark:bg-blue-900/20"
+                color="text-neon-blue"
+                bg="bg-neon-blue/10"
             />
-            <Link to="/fire-calculator" className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/10 dark:to-orange-900/10 p-4 rounded-xl border border-amber-100 dark:border-amber-800 hover:shadow-md transition-shadow flex flex-col justify-center items-center text-center">
-                <div className="bg-amber-100 dark:bg-amber-900/30 p-2 rounded-full mb-2">
-                    <ArrowRight className="w-4 h-4 text-amber-600" />
+            <Link to="/fire-calculator" className="glass p-6 rounded-2xl border border-neon-amber/20 hover:bg-neon-amber/5 transition-all flex flex-col justify-center items-center text-center relative overflow-hidden group">
+                <div className="absolute inset-0 bg-neon-amber/5 opacity-0 group-hover:opacity-100 transition-opacity blur-2xl"></div>
+                <div className="bg-neon-amber/20 p-3 rounded-full mb-4 ring-1 ring-neon-amber/30 group-hover:rotate-12 transition-transform">
+                    <ArrowRight className="w-5 h-5 text-neon-amber" />
                 </div>
-                <p className="text-sm font-bold text-amber-900 dark:text-amber-100">Plan FIRE</p>
-                <p className="text-xs text-amber-600/80 dark:text-amber-400">Retire Early</p>
+                <p className="text-sm font-display font-black text-white uppercase tracking-widest mb-1">Architect FIRE</p>
+                <p className="text-[10px] font-bold text-neon-amber uppercase tracking-tighter group-hover:text-white transition-colors">Retire Early</p>
             </Link>
         </div>
     );

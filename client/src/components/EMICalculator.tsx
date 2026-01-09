@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { CalculatorInput } from './CalculatorInput';
 import {
     BarChart,
     Bar,
@@ -6,14 +7,13 @@ import {
     YAxis,
     CartesianGrid,
     Tooltip,
-    Legend,
     ResponsiveContainer
 } from 'recharts';
 import { IndianRupee, Percent, Calendar, Calculator, CheckCircle, AlertCircle } from 'lucide-react';
 import { SEO } from './SEO';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { STORAGE_KEYS } from '../utils/storageKeys';
-import { trackSliderInteraction } from '../utils/analytics';
+
 
 interface SimulationResult {
     totalInterest: number;
@@ -158,62 +158,10 @@ export const EMICalculator = () => {
         return `${m} Months`;
     };
 
-    const InputControl = ({
-        label,
-        value,
-        setValue,
-        min,
-        max,
-        step,
-        icon: Icon,
-        suffix,
-        bgClass = "bg-gray-100"
-    }: {
-        label: string,
-        value: number,
-        setValue: (v: number) => void,
-        min: number,
-        max: number,
-        step: number,
-        icon: any,
-        suffix?: string,
-        bgClass?: string
-    }) => (
-        <div className={`p-4 rounded-xl ${bgClass} mb-4`}>
-            <div className="flex justify-between items-center mb-2">
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
-                    <Icon className="w-4 h-4 text-blue-500" />
-                    {label}
-                </label>
-                <div className="flex items-center bg-white dark:bg-gray-800 rounded-md px-3 py-1 border border-gray-200 dark:border-gray-600">
-                    <input
-                        type="number"
-                        value={value}
-                        onChange={(e) => {
-                            const val = Number(e.target.value);
-                            if (val >= 0) setValue(val);
-                        }}
-                        className="w-24 text-right bg-transparent border-none focus:ring-0 text-sm font-semibold text-gray-900 dark:text-white p-0"
-                    />
-                    <span className="ml-1 text-xs text-gray-500 dark:text-gray-400">{suffix}</span>
-                </div>
-            </div>
-            <input
-                type="range"
-                min={min}
-                max={max}
-                step={step}
-                value={value}
-                onChange={(e) => setValue(Number(e.target.value))}
-                onMouseUp={() => trackSliderInteraction('EMI Calculator')}
-                onTouchEnd={() => trackSliderInteraction('EMI Calculator')}
-                className="w-full h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 accent-blue-600"
-            />
-        </div>
-    );
+
 
     return (
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden">
+        <div className="bg-slate-900 rounded-2xl shadow-2xl border border-slate-800 overflow-hidden text-slate-100 font-sans">
             <SEO
                 title="Loan EMI Calculator with Prepayment Analysis | Stable Money"
                 description="Calculate your Home Loan, Car Loan, or Personal Loan EMI. Analyze the impact of prepayments on your tenure and interest savings."
@@ -222,86 +170,87 @@ export const EMICalculator = () => {
                 schema={schema}
             />
             {/* Header */}
-            <div className="p-6 border-b border-gray-100 dark:border-gray-700 bg-gradient-to-r from-indigo-50 to-transparent dark:from-indigo-900/20">
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                    <Calculator className="w-6 h-6 text-indigo-600" />
-                    Smart Loan & Prepayment Calculator
+            <div className="p-6 border-b border-white/10 bg-white/5">
+                <h2 className="text-2xl font-display font-bold text-white flex items-center gap-2">
+                    <Calculator className="w-6 h-6 text-neon-cyan" />
+                    Loan EMI & Savings Planner
                 </h2>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                    See how small prepayments can save you lakhs in interest.
+                <p className="text-sm text-gray-400 mt-1">
+                    Visualize how small prepayments slash your loan tenure and interest.
                 </p>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-0">
                 {/* Left Panel: Inputs */}
-                <div className="lg:col-span-4 p-6 border-r border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50">
-                    <InputControl
+                <div className="lg:col-span-4 p-6 border-r border-white/10 bg-white/5">
+                    <CalculatorInput
                         label="Loan Amount"
                         value={loanAmount}
                         setValue={setLoanAmount}
                         min={100000} max={10000000} step={100000}
                         icon={IndianRupee}
                         suffix="₹"
-                        bgClass="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700"
+                        iconClass="text-neon-cyan"
                     />
-                    <InputControl
+                    <CalculatorInput
                         label="Interest Rate"
                         value={interestRate}
                         setValue={setInterestRate}
                         min={1} max={20} step={0.1}
                         icon={Percent}
                         suffix="%"
-                        bgClass="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700"
+                        iconClass="text-neon-purple"
                     />
-                    <InputControl
+                    <CalculatorInput
                         label="Tenure"
                         value={tenureYears}
                         setValue={setTenureYears}
                         min={1} max={30} step={1}
                         icon={Calendar}
                         suffix="Yrs"
-                        bgClass="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700"
+                        iconClass="text-neon-amber"
                     />
 
                     {/* Prepayment Section */}
-                    <div className="mt-8 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl p-5 border border-indigo-100 dark:border-indigo-800">
-                        <div className="flex items-center justify-between mb-4">
-                            <label className="text-sm font-bold text-gray-800 dark:text-gray-200 flex items-center gap-2">
-                                <CheckCircle className="w-4 h-4 text-indigo-600" />
-                                Make Prepayments?
+                    <div className="mt-8 glass rounded-2xl p-6 border border-white/10 shadow-xl relative overflow-hidden group">
+                        <div className="absolute top-0 left-0 w-1 h-full bg-neon-cyan/50"></div>
+                        <div className="flex items-center justify-between mb-6">
+                            <label className="text-sm font-bold text-white flex items-center gap-2">
+                                <CheckCircle className={`w-4 h-4 ${isPrepaymentEnabled ? 'text-neon-cyan' : 'text-gray-500'}`} />
+                                Smart Prepayments
                             </label>
                             <div
-                                className={`w-12 h-6 rounded-full p-1 cursor-pointer transition-colors ${isPrepaymentEnabled ? 'bg-indigo-600' : 'bg-gray-300'}`}
+                                className={`w-12 h-6 rounded-full p-1 cursor-pointer transition-all duration-300 ring-4 ${isPrepaymentEnabled ? 'bg-neon-cyan ring-neon-cyan/20' : 'bg-gray-700 ring-transparent'}`}
                                 onClick={() => setIsPrepaymentEnabled(!isPrepaymentEnabled)}
                             >
-                                <div className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${isPrepaymentEnabled ? 'translate-x-6' : 'translate-x-0'}`}></div>
+                                <div className={`bg-white w-4 h-4 rounded-full shadow-lg transform transition-transform duration-300 ${isPrepaymentEnabled ? 'translate-x-6' : 'translate-x-0'}`}></div>
                             </div>
                         </div>
 
                         {isPrepaymentEnabled && (
-                            <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
+                            <div className="space-y-6 animate-in fade-in slide-in-from-top-4 duration-500">
                                 <div>
-                                    <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Extra Payment Amount</label>
-                                    <div className="relative">
-                                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">₹</span>
+                                    <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2">Extra Payment</label>
+                                    <div className="relative group/input">
+                                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-neon-cyan font-bold tracking-tight">₹</span>
                                         <input
                                             type="number"
                                             value={prepaymentAmount}
                                             onChange={(e) => setPrepaymentAmount(Number(e.target.value))}
-                                            className="w-full pl-8 pr-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
+                                            className="w-full pl-8 pr-4 py-3 rounded-xl border border-white/20 bg-white/5 focus:ring-2 focus:ring-neon-cyan outline-none text-sm font-bold text-white transition-all group-hover/input:bg-white/10"
                                         />
                                     </div>
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Frequency</label>
+                                    <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2">Frequency</label>
                                     <select
                                         value={prepaymentFrequency}
                                         onChange={(e) => setPrepaymentFrequency(e.target.value as any)}
-                                        className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
+                                        className="w-full px-4 py-3 rounded-xl border border-white/20 bg-white/5 focus:ring-2 focus:ring-neon-cyan outline-none text-sm font-bold text-white transition-all hover:bg-white/10"
                                     >
-                                        <option value="monthly">Monthly</option>
-                                        <option value="quarterly">Quarterly</option>
-                                        <option value="yearly">Yearly</option>
+                                        <option value="monthly" className="bg-slate-900">Monthly</option>
+                                        <option value="quarterly" className="bg-slate-900">Quarterly</option>
+                                        <option value="yearly" className="bg-slate-900">Yearly</option>
                                     </select>
                                 </div>
                             </div>
@@ -314,69 +263,86 @@ export const EMICalculator = () => {
 
                     {/* Metric Cards */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div className="bg-gray-50 dark:bg-gray-700/50 p-5 rounded-xl border border-gray-200 dark:border-gray-600">
-                            <p className="text-gray-500 text-xs font-bold uppercase tracking-wider">Estimated Monthly EMI</p>
-                            <p className="text-2xl font-extrabold text-gray-900 dark:text-white mt-1">{formatCurrency(Math.round(regularEMI))}</p>
+                        <div className="glass p-5 rounded-2xl border border-white/10 shadow-lg group">
+                            <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-1">Monthly EMI</p>
+                            <p className="text-2xl font-black text-white group-hover:text-neon-cyan transition-colors">{formatCurrency(Math.round(regularEMI))}</p>
                         </div>
                         {isPrepaymentEnabled ? (
                             <>
-                                <div className="bg-green-50 dark:bg-green-900/20 p-5 rounded-xl border border-green-200 dark:border-green-800">
-                                    <p className="text-green-600 dark:text-green-400 text-xs font-bold uppercase tracking-wider flex items-center gap-1">
+                                <div className="glass p-5 rounded-2xl border border-white/10 shadow-lg group relative overflow-hidden">
+                                    <div className="absolute top-0 right-0 w-16 h-16 bg-neon-cyan/5 rounded-full blur-xl"></div>
+                                    <p className="text-[10px] font-bold uppercase tracking-widest text-neon-cyan mb-1 flex items-center gap-1">
                                         <CheckCircle className="w-3 h-3" /> Total Savings
                                     </p>
-                                    <p className="text-2xl font-extrabold text-green-700 dark:text-green-400 mt-1">{formatCurrency(savings.money)}</p>
+                                    <p className="text-2xl font-black text-neon-cyan group-hover:drop-shadow-[0_0_8px_rgba(6,182,212,0.4)] transition-all">{formatCurrency(savings.money)}</p>
                                 </div>
-                                <div className="bg-blue-50 dark:bg-blue-900/20 p-5 rounded-xl border border-blue-200 dark:border-blue-800">
-                                    <p className="text-blue-600 dark:text-blue-400 text-xs font-bold uppercase tracking-wider flex items-center gap-1">
+                                <div className="glass p-5 rounded-2xl border border-white/10 shadow-lg group text-right">
+                                    <p className="text-[10px] font-bold uppercase tracking-widest text-neon-purple mb-1 flex items-center justify-end gap-1">
                                         <Calendar className="w-3 h-3" /> Time Saved
                                     </p>
-                                    <p className="text-2xl font-extrabold text-blue-700 dark:text-blue-400 mt-1">{formatTimeSaved(savings.timeMonths)}</p>
+                                    <p className="text-2xl font-black text-white group-hover:text-neon-purple transition-colors">{formatTimeSaved(savings.timeMonths)}</p>
                                 </div>
                             </>
                         ) : (
-                            <div className="col-span-2 bg-indigo-50 dark:bg-indigo-900/10 border border-dashed border-indigo-200 dark:border-indigo-800 p-5 rounded-xl flex items-center justify-center text-center">
-                                <div>
-                                    <AlertCircle className="w-6 h-6 text-indigo-400 mx-auto mb-2" />
-                                    <p className="text-sm text-indigo-600 dark:text-indigo-300 font-medium">Enable Prepayment to calculate potential savings!</p>
+                            <div className="col-span-2 glass border border-dashed border-white/20 p-5 rounded-2xl flex items-center justify-center text-center group hover:border-neon-cyan/40 transition-all">
+                                <div className="animate-pulse group-hover:animate-none">
+                                    <AlertCircle className="w-6 h-6 text-neon-cyan/40 mx-auto mb-2 group-hover:text-neon-cyan transition-colors" />
+                                    <p className="text-xs text-gray-500 font-bold uppercase tracking-widest group-hover:text-gray-300 transition-colors">Apply Smart Prepayments to see Savings</p>
                                 </div>
                             </div>
                         )}
                     </div>
 
                     {/* Chart */}
-                    <div className="bg-white dark:bg-gray-800 rounded-xl p-4 h-80 relative">
-                        <p className="text-sm font-semibold text-gray-500 mb-4">Total Amount Payable Comparison</p>
-                        <ResponsiveContainer width="100%" height="100%">
+                    <div className="glass rounded-2xl p-6 h-80 relative overflow-hidden group">
+                        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-neon-cyan to-neon-purple opacity-30"></div>
+                        <div className="flex justify-between items-center mb-6">
+                            <p className="text-xs font-bold text-gray-500 uppercase tracking-widest px-2">Total Amount Comparison</p>
+                            <div className="flex gap-4 text-[10px] font-bold uppercase tracking-tighter">
+                                <div className="flex items-center gap-2">
+                                    <div className="w-2.5 h-2.5 rounded-sm bg-slate-500"></div>
+                                    <span className="text-gray-500">Principal</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <div className="w-2.5 h-2.5 rounded-sm bg-neon-purple ring-4 ring-neon-purple/20"></div>
+                                    <span className="text-white">Interest</span>
+                                </div>
+                            </div>
+                        </div>
+                        <ResponsiveContainer width="100%" height="80%">
                             <BarChart
                                 data={chartData}
                                 layout="vertical"
                                 margin={{ top: 5, right: 30, left: 40, bottom: 5 }}
-                                barSize={40}
+                                barSize={32}
                             >
-                                <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} opacity={0.1} />
+                                <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="#ffffff" opacity={0.05} />
                                 <XAxis type="number" hide />
-                                <YAxis type="category" dataKey="name" width={100} tick={{ fontSize: 12 }} />
+                                <YAxis
+                                    type="category"
+                                    dataKey="name"
+                                    width={110}
+                                    tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 'bold' }}
+                                    axisLine={false}
+                                    tickLine={false}
+                                />
                                 <Tooltip
                                     formatter={(value: any) => formatCurrency(Number(value))}
-                                    cursor={{ fill: 'transparent' }}
-                                    contentStyle={{ borderRadius: '8px', border: 'none', backgroundColor: '#1f2937', color: '#fff' }}
+                                    cursor={{ fill: 'rgba(255,255,255,0.05)' }}
+                                    contentStyle={{
+                                        backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                                        borderColor: 'rgba(255, 255, 255, 0.1)',
+                                        color: '#ffffff',
+                                        borderRadius: '12px',
+                                        backdropFilter: 'blur(8px)',
+                                        fontSize: '11px',
+                                        fontWeight: 'bold'
+                                    }}
                                 />
-                                <Legend />
-                                <Bar dataKey="Principal" stackId="a" fill="#94a3b8" />
-                                <Bar dataKey="Interest" stackId="a" fill="#6366f1" radius={[0, 4, 4, 0]} />
+                                <Bar dataKey="Principal" stackId="a" fill="#475569" radius={0} />
+                                <Bar dataKey="Interest" stackId="a" fill="#a855f7" radius={[0, 4, 4, 0]} />
                             </BarChart>
                         </ResponsiveContainer>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4 text-sm text-gray-500 dark:text-gray-400">
-                        <div className="flex items-center gap-2">
-                            <div className="w-3 h-3 bg-slate-400 rounded-sm"></div>
-                            <span>Principal Amount</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <div className="w-3 h-3 bg-indigo-500 rounded-sm"></div>
-                            <span>Interest Payable</span>
-                        </div>
                     </div>
 
                 </div>

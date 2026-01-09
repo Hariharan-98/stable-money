@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { CalculatorInput } from './CalculatorInput';
 import {
     BarChart,
     Bar,
@@ -155,28 +156,11 @@ export const TaxCalculator = () => {
         { name: 'New Regime', tax: Math.round(totalTaxNew) },
     ];
 
-    const InputControl = ({ label, value, setValue, icon: Icon }: any) => (
-        <div className="mb-4">
-            <label className="text-xs font-semibold text-gray-500 mb-1 flex items-center gap-1">
-                {Icon && <Icon className="w-3 h-3" />}
-                {label}
-            </label>
-            <div className="flex items-center bg-gray-50 dark:bg-gray-700/50 rounded-lg p-2 border border-gray-200 dark:border-gray-600">
-                <span className="text-gray-400 mr-2 text-sm">₹</span>
-                <input
-                    type="number"
-                    value={value}
-                    onChange={(e) => setValue(Number(e.target.value))}
-                    className="w-full bg-transparent outline-none text-gray-900 dark:text-gray-100 font-mono text-sm"
-                />
-            </div>
 
-        </div>
-    );
 
 
     return (
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden font-sans">
+        <div className="bg-slate-900 rounded-2xl shadow-2xl border border-slate-800 overflow-hidden text-slate-100 font-sans">
             <SEO
                 title="Income Tax Calculator FY 2025-26 (Old vs New Regime) | Stable Money"
                 description="Compare your tax liability under Old vs New Tax Regime for FY 2025-26. Calculate tax savings with 80C, HRA, and Standard Deduction."
@@ -185,105 +169,121 @@ export const TaxCalculator = () => {
                 schema={schema}
             />
             {/* Header */}
-            <div className="p-6 bg-slate-100 dark:bg-slate-900 border-b border-gray-200 dark:border-slate-700">
+            <div className="p-6 border-b border-white/10 bg-white/5 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                    <FileText className="w-6 h-6 text-blue-600" />
+                    <div className="p-2 bg-neon-blue/10 rounded-xl">
+                        <FileText className="w-6 h-6 text-neon-blue" />
+                    </div>
                     <div>
-                        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Income Tax Comparison</h2>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">FY 2025-26 (AY 2026-27)</p>
+                        <h2 className="text-2xl font-display font-bold text-white tracking-tight">Tax Optimizer</h2>
+                        <p className="text-sm text-gray-400">AY 2026-27 (FY 2025-26)</p>
                     </div>
                 </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12">
                 {/* Inputs */}
-                <div className="lg:col-span-5 p-6 border-r border-gray-100 dark:border-gray-700 bg-gray-50/30 dark:bg-gray-900/30">
-                    <div className="space-y-6">
+                {/* Inputs */}
+                <div className="lg:col-span-4 p-6 border-r border-white/10 bg-white/5">
+                    <div className="space-y-10">
                         <div>
-                            <h3 className="text-sm font-bold text-blue-600 uppercase mb-4 flex items-center gap-2">
-                                <IndianRupee className="w-4 h-4" /> Income Sources
-                            </h3>
-                            <InputControl label="Gross Salary" value={grossSalary} setValue={setGrossSalary} />
-                            <InputControl label="Other Income" value={otherIncome} setValue={setOtherIncome} />
+                            <h3 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-6 border-l-4 border-neon-blue pl-3">Income Sources</h3>
+                            <CalculatorInput label="Gross Salary" value={grossSalary} setValue={setGrossSalary} min={0} max={10000000} step={10000} icon={IndianRupee} iconClass="text-neon-blue" />
+                            <CalculatorInput label="Other Income" value={otherIncome} setValue={setOtherIncome} min={0} max={5000000} step={5000} icon={IndianRupee} iconClass="text-neon-cyan" />
                         </div>
 
                         <div>
-                            <h3 className="text-sm font-bold text-blue-600 uppercase mb-4 flex items-center gap-2">
-                                <Calculator className="w-4 h-4" /> Deductions (Old Regime)
-                            </h3>
-                            <InputControl label="80C (PPF, ELSS, LIC)" value={deduction80C} setValue={setDeduction80C} />
-                            <InputControl label="80D (Health Insurance)" value={deduction80D} setValue={setDeduction80D} />
-                            <InputControl label="HRA Exemption" value={hra} setValue={setHra} />
-                            <InputControl label="Home Loan Interest (Sec 24)" value={homeLoanInterest} setValue={setHomeLoanInterest} />
-                            <InputControl label="Other Deductions" value={otherDeductions} setValue={setOtherDeductions} />
+                            <h3 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-6 border-l-4 border-neon-amber pl-3">Deductions (Old Only)</h3>
+                            <CalculatorInput label="80C Investments" value={deduction80C} setValue={setDeduction80C} min={0} max={150000} step={5000} icon={Calculator} iconClass="text-neon-amber" />
+                            <CalculatorInput label="80D Medical" value={deduction80D} setValue={setDeduction80D} min={0} max={100000} step={1000} icon={Calculator} iconClass="text-neon-cyan" />
+                            <CalculatorInput label="HRA Exemption" value={hra} setValue={setHra} min={0} max={1000000} step={5000} icon={Calculator} iconClass="text-neon-green" />
+                            <CalculatorInput label="Sec 24 Interest" value={homeLoanInterest} setValue={setHomeLoanInterest} min={0} max={200000} step={5000} icon={Calculator} iconClass="text-neon-purple" />
+                            <CalculatorInput label="Other Deduction" value={otherDeductions} setValue={setOtherDeductions} min={0} max={500000} step={5000} icon={Calculator} iconClass="text-neon-orange" />
                         </div>
                     </div>
                 </div>
 
-                {/* Results */}
-                <div className="lg:col-span-7 p-6 lg:p-8 bg-white dark:bg-gray-800">
+                {/* Results Column */}
+                <div className="lg:col-span-8 p-6 lg:p-8 space-y-8">
 
                     {/* Comparison Card */}
-                    <div className="bg-slate-50 dark:bg-slate-900 rounded-xl p-6 border border-slate-200 dark:border-slate-700 mb-8">
-                        <div className="grid grid-cols-2 gap-8 relative">
+                    <div className={`glass rounded-3xl p-8 border transition-all duration-500 shadow-2xl relative overflow-hidden group ${betterRegime === 'New' ? 'border-neon-blue/40 shadow-neon-blue/10' : 'border-neon-amber/40 shadow-neon-amber/10'}`}>
+                        <div className={`absolute top-0 right-0 w-80 h-80 rounded-full blur-[100px] -mr-32 -mt-32 transition-opacity group-hover:opacity-100 opacity-60 ${betterRegime === 'New' ? 'bg-neon-blue/20' : 'bg-neon-amber/20'}`}></div>
+
+                        <div className="grid grid-cols-2 gap-8 relative z-10">
                             {/* Vertical divider */}
-                            <div className="absolute left-1/2 top-0 bottom-0 w-px bg-slate-200 dark:bg-slate-700 transform -translate-x-1/2 hidden md:block"></div>
+                            <div className="absolute left-1/2 top-4 bottom-4 w-px bg-white/10 hidden md:block"></div>
 
                             {/* Old */}
-                            <div className="text-center relative z-10">
-                                <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Old Regime</p>
-                                <p className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-1">{formatCurrency(totalTaxOld)}</p>
-                                <p className="text-xs text-gray-400">Total Tax Payable</p>
+                            <div className={`text-center transition-all ${betterRegime === 'Old' ? 'scale-105' : 'opacity-60 grayscale-[0.5]'}`}>
+                                <p className={`text-[10px] font-black uppercase tracking-[0.2em] mb-3 ${betterRegime === 'Old' ? 'text-neon-amber' : 'text-gray-500'}`}>Old Regime</p>
+                                <p className="text-3xl font-display font-black text-white mb-1">{formatCurrency(totalTaxOld)}</p>
+                                <p className="text-[10px] font-bold text-gray-500 uppercase">Yearly Tax</p>
                                 {betterRegime === 'Old' && (
-                                    <div className="mt-3 inline-flex items-center gap-1 bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold">
-                                        <CheckCircle className="w-3 h-3" /> Best Option
+                                    <div className="mt-4 inline-flex items-center gap-2 bg-neon-amber/10 text-neon-amber border border-neon-amber/20 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest leading-none">
+                                        <CheckCircle className="w-3.5 h-3.5" /> Optimal Choice
                                     </div>
                                 )}
                             </div>
 
                             {/* New */}
-                            <div className="text-center relative z-10">
-                                <p className="text-xs font-bold text-blue-600 uppercase tracking-wider mb-2">New Regime</p>
-                                <p className="text-2xl font-bold text-blue-600 mb-1">{formatCurrency(totalTaxNew)}</p>
-                                <p className="text-xs text-gray-400">Total Tax Payable</p>
+                            <div className={`text-center transition-all ${betterRegime === 'New' ? 'scale-105' : 'opacity-60 grayscale-[0.5]'}`}>
+                                <p className={`text-[10px] font-black uppercase tracking-[0.2em] mb-3 ${betterRegime === 'New' ? 'text-neon-blue' : 'text-gray-500'}`}>New Regime</p>
+                                <p className={`text-3xl font-display font-black mb-1 ${betterRegime === 'New' ? 'text-neon-blue drop-shadow-[0_0_15px_rgba(59,130,246,0.3)]' : 'text-white'}`}>{formatCurrency(totalTaxNew)}</p>
+                                <p className="text-[10px] font-bold text-gray-500 uppercase">Yearly Tax</p>
                                 {betterRegime === 'New' && (
-                                    <div className="mt-3 inline-flex items-center gap-1 bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-bold">
-                                        <CheckCircle className="w-3 h-3" /> Best Option
+                                    <div className="mt-4 inline-flex items-center gap-2 bg-neon-blue/10 text-neon-blue border border-neon-blue/20 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest leading-none">
+                                        <CheckCircle className="w-3.5 h-3.5" /> Optimal Choice
                                     </div>
                                 )}
                             </div>
                         </div>
 
                         {/* Verdict */}
-                        <div className="mt-6 pt-6 border-t border-slate-200 dark:border-slate-700 text-center">
-                            <p className="text-lg font-medium text-gray-700 dark:text-gray-300">
-                                You save <span className="font-bold text-green-600 text-xl">{formatCurrency(diff)}</span> by choosing the
-                                <strong className={`ml-1 ${betterRegime === 'New' ? 'text-blue-600' : 'text-gray-900 dark:text-white'}`}>{betterRegime} Regime</strong>.
+                        <div className={`mt-8 pt-8 border-t border-white/10 text-center relative z-10 p-6 rounded-2xl ${betterRegime === 'New' ? 'bg-neon-blue/5' : 'bg-neon-amber/5'}`}>
+                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Stable Money Verdict</p>
+                            <h4 className="text-xl font-display font-black text-white mb-1">
+                                Save <span className="text-neon-green text-3xl mx-2">{formatCurrency(diff)}</span> Per Year
+                            </h4>
+                            <p className="text-sm font-medium text-gray-500">
+                                Equivalent to <span className="text-white font-bold">{formatCurrency(diff / 12)} monthly</span> by choosing the <span className={`font-black ${betterRegime === 'New' ? 'text-neon-blue' : 'text-neon-amber'}`}>{betterRegime} Regime</span>.
                             </p>
                         </div>
                     </div>
 
                     {/* Chart */}
-                    <div className="h-64 mt-8">
-                        <ResponsiveContainer width="100%" height="100%">
+                    <div className="h-64 mt-12 glass rounded-3xl p-6 border border-white/10 relative overflow-hidden">
+                        <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-6 border-l-4 border-neon-blue pl-3">Liability Comparison</p>
+                        <ResponsiveContainer width="100%" height="80%">
                             <BarChart data={chartData} layout="vertical" margin={{ top: 0, right: 30, left: 30, bottom: 0 }}>
                                 <XAxis type="number" hide />
-                                <YAxis type="category" dataKey="name" tick={{ fontSize: 12 }} width={100} />
-                                <Tooltip cursor={{ fill: 'transparent' }} formatter={(value: any) => formatCurrency(value)} />
-                                <Bar dataKey="tax" radius={[0, 4, 4, 0]} barSize={40}>
+                                <YAxis type="category" dataKey="name" tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 'bold' }} width={80} stroke="none" />
+                                <Tooltip
+                                    cursor={{ fill: 'rgba(255,255,255,0.05)' }}
+                                    contentStyle={{
+                                        backgroundColor: '#0f172a',
+                                        borderColor: 'rgba(255,255,255,0.1)',
+                                        borderRadius: '12px',
+                                        fontSize: '11px'
+                                    }}
+                                    formatter={(value: any) => [formatCurrency(value), 'Tax']}
+                                />
+                                <Bar dataKey="tax" radius={[0, 8, 8, 0]} barSize={32}>
                                     {chartData.map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={entry.name.includes(betterRegime) ? '#16a34a' : '#94a3b8'} />
+                                        <Cell key={`cell-${index}`} fill={entry.name.includes(betterRegime) ? '#10b981' : '#334155'} />
                                     ))}
                                 </Bar>
                             </BarChart>
                         </ResponsiveContainer>
                     </div>
 
-                    <div className="mt-8 bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg flex items-start gap-3">
-                        <Info className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
-                        <div className="text-sm text-blue-800 dark:text-blue-200">
-                            <p className="font-bold mb-1">FY 25-26 Updates:</p>
-                            <p>New Regime Standard Deduction increased to ₹75,000. Tax-free limit effectively ₹12 Lakhs (with rebate).</p>
+                    <div className="mt-8 glass rounded-2xl p-5 border border-neon-blue/20 bg-neon-blue/5 flex items-start gap-4">
+                        <div className="p-2 bg-neon-blue/10 rounded-lg">
+                            <Info className="w-5 h-5 text-neon-blue shrink-0" />
+                        </div>
+                        <div className="text-[10px] text-gray-400 font-bold uppercase tracking-widest leading-relaxed">
+                            <p className="text-neon-blue mb-1">FY 25-26 Budget Updates:</p>
+                            <p>New Regime Standard Deduction increased to <span className="text-white">₹75,000</span>. Tax-free limit effectively <span className="text-white">₹12 Lakhs</span> (with rebate).</p>
                         </div>
                     </div>
 

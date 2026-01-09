@@ -2,21 +2,27 @@ import { Layout } from '../components/Layout';
 import { RentVsBuyCalculator } from '../components/RentVsBuyCalculator';
 import { ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { SEO } from '../components/SEO';
 
 export const RentVsBuyCalculatorPage = () => {
     return (
         <Layout>
-            <div className="space-y-6">
+            <SEO
+                title="Rent vs Buy Calculator | Stable Money"
+                description="Make informed housing decisions with our comprehensive rent vs buy calculator."
+                keywords="rent vs buy, housing calculator, real estate India"
+            />
+            <div className="space-y-8">
                 <div className="flex items-center space-x-4">
                     <Link
                         to="/"
-                        className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400 transition-colors"
+                        className="glass p-2 rounded-lg hover:bg-white/10 text-gray-200 hover:text-neon-cyan transition-all"
                     >
                         <ArrowLeft className="w-6 h-6" />
                     </Link>
                     <div>
-                        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Smart Financial Tools</h1>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">Make informed housing decisions</p>
+                        <h1 className="text-3xl font-display font-bold gradient-text">Rent vs Buy Calculator</h1>
+                        <p className="text-gray-300 mt-1">Make the right choice for your dream home</p>
                     </div>
                 </div>
 
